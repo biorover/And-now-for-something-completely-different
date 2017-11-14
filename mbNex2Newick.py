@@ -16,10 +16,11 @@ by using 'grep -c "tree gen" fileName'
 
 import sys
 
-if len(sys) < 2:
+if len(sys.argv) < 2:
     print help_prompt
 elif sys.argv[1] in ['h','-h','help','-help','--help','--h']:
     print help_prompt
+    exit()
 
 nex = open(sys.argv[1]).read().split(';')
 translate = nex[1].split('\n')[2:]
