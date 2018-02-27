@@ -2,12 +2,25 @@
 
 #!/usr/bin/env python
 
-#selects longest non-overlapping transcripts from gtf
+
 
 #assumes sane GTF (only CDS features, all features belonging to same transcript in order,
 #defline format: "transcript_id <trancript_id> [; etc.]")
 
 import sys
+import argparse
+
+parser = argparse.ArgumentParser(description="goes through gtfs and finds bits which overlap with each other. \
+                                 Can return overlapping lines from second GFF or non-overlapping lines (default)")
+
+parser.add_argument('--gtf1', '-1', help = "first gtf")
+
+parser.add_argument('--gtf2', '-2', help = "second gtf (from which lines will be returned)")
+
+parser.add_argument('--return','-r', dest = 'what2return', help = 'non-overlapping (default) or overlapping',
+                    default = 'non-overlapping')
+
+args=parser.parse_args()
 
 chunksize = 100000
 seqlens = []
@@ -15,7 +28,7 @@ lines_dict = {}
 coords_dict = {}
 
 
-for line in open(sys.argv[1]):
+for line in open(args.gtf1):
     if line[0] != '#' and line.count('\t') > 6:
         fields = line.split('\t')
         transcript_id = fields[-1].split(';')[0].split()[1]
@@ -35,7 +48,7 @@ for line in open(sys.argv[1]):
                 if coord / chunksize == key[-1]:
                     coords_dict[key].append(coords)
 
-for line in open(sys.argv[2]):
+for line in open(args.gtf2):
     if line[0] != '#' and line.count('\t') > 6:
         fields = line.split('\t')
         transcript_id = fields[-1].split(';')[0].split()[1]
@@ -56,5 +69,7 @@ for line in open(sys.argv[2]):
                     start < occupied_coord[0] < stop:
                         overlap = True
                         break
-        if not overlap:
+        if not overlap and args.what2return == 'non-overlapping':
+            print line[:-1]
+        elif overlap and args.what2return == 'overlapping':
             print line[:-1]
