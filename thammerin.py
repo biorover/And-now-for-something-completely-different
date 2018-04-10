@@ -10,6 +10,10 @@
 import subprocess
 import genome
 import argparse
+from datetime import datetime
+import os
+import random
+
 
 parser = argparse.ArgumentParser(description='thammerin\nPronounced Tee hammerin\', so pronounced identically \
                                  to tHMMERn but does NOT infinge on the copyrights of HHMI (HMMER) or \
@@ -23,14 +27,22 @@ parser.add_argument('-n','--nucleotide_seqs',dest='target_nucdb',
 parser.add_argument('-p','--protein_hmm', dest = 'hmm_file',
                     help = 'Query protein hmms (created using the hmmbuild program)')
 
-parser.add_argument('-e','--iEvalue_threshold', dest = 'iEval_thresh', default = float('inf'),
+parser.add_argument('-e','--iEvalue_threshold', dest = 'iEval_thresh', default = float('inf'), type=float,
                     help = 'threshold "i-Evalue" for inclusion in results')
 
 parser.add_argument('-s','--min_orf_size', dest = 'min_orf_size', default = 10,
-                    help = 'threshold "i-Evalue" for inclusion in results')
+                    help = 'minimum orf to search with HMM profile')
 
 parser.add_argument('-f','--hmmsearch_filepath',dest = 'hmmsearch_filepath', default = 'hmmsearch',
                     help = 'optional path to hmmsearch program in not in your PATH variable')
+
+parser.add_argument('--out_format', dest = 'out_format', default = 'standard',
+                    help = 'output format, accepts any combination of hmm name, target name, percent identity,\
+                    alignment length, mismatch number, null field (for compatibility with blast standard output), hmm start,\
+                    hmm end, target start, target end, hsp evalue, hmmsearch score, standard (all of the preceeding fields in\
+                    that order), number of idenitical positions, number of similar positions, number of gaps, \
+                    percentage of similar positions, any specific string (in quotes), target frame, hmm match sequence,\
+                    target match sequeence, hmm length, and target length (whole seq, not just frame)')
 
 args=parser.parse_args()
 
@@ -62,11 +74,14 @@ for seq_id in target_nucdb.genome_sequence:
             if len(orf) > args.min_orf_size:
                 fasta_list.append('>' + seq_id + "_frameOffset-" + str(frame_offset) + "_orfStart-" + str(orf_start) +
                                   '\n' + orf)
-    out = open('tmp_thammerin_frames.fa','w')
+    random_string = str(random.randint(10000,99999)) + str(datetime.now()).replace(':','').replace(' ','')
+    framesfile = 'tmp_thammerin_frames.' + random_string + '.fa'
+    table_outfile = 'tmp_thammerin_hmmresults.' + random_string + ".tab"
+    out = open(framesfile,'w')
     out.write('\n'.join(fasta_list))
     out.close()
-    subprocess.call(hmmsearch + " --domtblout tmp_thammerin_hmmresults.tab " + args.hmm_file + " tmp_thammerin_frames.fa >> tmp_thammer_log.log", shell=True)
-    hmmresults = open('tmp_thammerin_hmmresults.tab')
+    subprocess.call(hmmsearch + " --domtblout " + table_outfile + " " + args.hmm_file + " " + framesfile +" >> tmp_thammer_log.log", shell=True)
+    hmmresults = open(table_outfile)
     for line in hmmresults:
         if line[0] != "#":
             fields = line.split()
@@ -84,6 +99,7 @@ for seq_id in target_nucdb.genome_sequence:
                     stop = frame_offset - 3 * orf_start - 3 * int(fields[18]) + 2
                 print "\t".join([fields[3],tname.split('_frameOffset-')[0],fields[21],'.','.',strand,
                                  fields[15],fields[16],str(start),str(stop),fields[12],fields[13]])
+    subprocess.call("rm " + framesfile + " " + table_outfile, shell = True)
 
 
 
