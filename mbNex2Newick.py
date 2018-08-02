@@ -47,7 +47,8 @@ for tree in trees:
 
 newtrees = ";\n".join(newtrees) + ';'
 for taxnum in tdict:
-    newtrees = newtrees.replace(taxnum + ':', tdict[taxnum] + 'dummySeperator:')
+    newtrees = newtrees.replace("(" + taxnum + ':', "(" + tdict[taxnum] + 'dummySeperator:')
+    newtrees = newtrees.replace("," + taxnum + ':', "," + tdict[taxnum] + 'dummySeperator:')
 newtrees = newtrees.replace('dummySeperator',"")
 
 print newtrees
