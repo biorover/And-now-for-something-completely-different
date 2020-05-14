@@ -14,7 +14,7 @@ parser.add_argument('--out_prefix', default = "saint", help = 'prefix for \
     output files')
 parser.add_argument('--data_type', default = "intensity", help = '"intensity"\
     or "spectralCount" (default = "intensity")')
-parser.add_argmuent('--saint_version', default = 'express', help = '"express" or "v2" (default = "express")')
+parser.add_argument('--saint_version', default = 'express', help = '"express" or "v2" (default = "express")')
 args = parser.parse_args()
 
 interaction_file = open(args.out_prefix + "_interactions.tab",'w')
