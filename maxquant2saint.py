@@ -47,6 +47,8 @@ for line in open(args.pg):
     elif len(fields) < len(ip_names):
         continue
     else:
+        if len(fields[1]) > 99:
+            fields[1] = fields[1][:99]
         for i in range(len(intensity_cols)):
             intensity_index = intensity_cols[i]
             interaction_file.write("\t".join([ip_names[i],baits[i],fields[1],fields[intensity_index]]) + '\n')
