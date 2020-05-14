@@ -13,7 +13,8 @@ parser.add_argument('--rep_sep', default = "_", help = 'separator between\
 parser.add_argument('--out_prefix', default = "saint", help = 'prefix for \
     output files')
 parser.add_argument('--data_type', default = "intensity", help = '"intensity"\
-    or "spectralCount" (default= "intensity")')
+    or "spectralCount" (default = "intensity")')
+parser.add_argmuent('--saint_version', default = 'express', help = '"express" or "v2" (default = "express")')
 args = parser.parse_args()
 
 interaction_file = open(args.out_prefix + "_interactions.tab",'w')
@@ -49,4 +50,10 @@ for line in open(args.pg):
         for i in range(len(intensity_cols)):
             intensity_index = intensity_cols[i]
             interaction_file.write("\t".join([ip_names[i],baits[i],fields[1],fields[intensity_index]]) + '\n')
-        prey_file.write('\t'.join([fields[1],fields[length_index],fields[6]]) + '\n')
+        if args.saint_version == "express":
+            prey_file.write('\t'.join([fields[1],fields[length_index],fields[6]]) + '\n')
+        elif args.saint_version == "v2":
+            prey_file.write('\t'.join([fields[1],fields[6]]) + '\n')
+        else:
+            print('saint_version must be one of "express" or "v2"')
+            exit()
