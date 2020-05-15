@@ -38,7 +38,7 @@ for line in open(args.pg):
                     else:
                         baits.append(args.rep_sep.join(field[field.find(" ") + \
                             1:].split(args.rep_sep)[:-1]))
-    elif len(fields) < len(baits)):
+    elif len(fields) < len(baits):
         continue
     else:
         if len(fields[1]) > 99:
