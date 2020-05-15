@@ -46,6 +46,6 @@ for line in open(args.pg):
             fields[1] = fields[1][:99] #these names are truncated in my code to convert maxquant to saint input because otherwise saint errors. This should be removed if names are not truncated in saint results
         for i in range(len(intensity_cols)):
             intensity_index = intensity_cols[i]
-            if fields[1] + '\t' + baits[i] in false_positives:
+            if baits[i] + "\t" + fields[1] in false_positives:
                 fields[intensity_index] = "0"
     sys.stdout.write("\t".join(fields))
