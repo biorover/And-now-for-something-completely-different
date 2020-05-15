@@ -16,10 +16,12 @@ parser.add_argument('--rep_sep', default = "_", help = 'separator between\
 args = parser.parse_args()
 
 false_positives = set()
+
 for line in open(args.int):
     fields = line.split('\t')
-    if float(fields[5]) < 0.95:
-        false_positives.add(fields[1] + "\t" + fields[2])
+    if fields[0] != "IP" and fields[1] != "Bait":
+        if float(fields[5]) < 0.95:
+            false_positives.add(fields[1] + "\t" + fields[2])
 
 
 intensity_cols = []
@@ -30,7 +32,6 @@ for line in open(args.pg):
         for i in range(len(fields)):
             field = fields[i]
             if (field[:10] == "Intensity "):
-                intensity_cols.append(i)
                 if not args.ctl in field:
                     intensity_cols.append(i)
                     if args.rep_sep == "none":
