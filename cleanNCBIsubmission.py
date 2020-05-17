@@ -51,7 +51,7 @@ for locus in actions:
     for action in actions[locus]:
         if action[0] == 1:
             fasta_seqs[locus] = fasta_seqs[locus][action[1]:]
-            adjust += actions[locus][1]
+            adjust += action[1]
         elif action[1] == action[2]:
             fasta_seqs[locus] = fasta_seqs[locus][:action[0] + 1 - adjust]
         else:
