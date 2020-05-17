@@ -26,6 +26,11 @@ for line in open(args.cont):
             actions[locus] = []
         actions[locus].append(coords + [seqlen])
 
+print("contaminated region:")
+for locus in actions:
+    for action in actions[locus]:
+        print([locus] + action)
+
 fasta_out = open(args.fasta.replace('.fsa','') + ".decontaminated.fsa",'w')
 tbl_out = open(args.tbl.replace('.tbl','') + ".decontaminated.tbl",'w')
 
@@ -96,4 +101,6 @@ for line in open(args.tbl):
             end = end + start_offset
             fields[0] = str(start)
             fields[1] = str(end)
+            if len(fields) == 2:
+                fields[1] += "\n"
             tbl_out.write('\t'.join(fields))
