@@ -70,7 +70,7 @@ for line in open(args.tbl):
                 if action[0] == 1:
                     start_offset = action[1]
                 elif action[1] == action[2]:
-                    end_clip = action[0]
+                    end_clip = action[0] - start_offset
         tbl_out.write(line)
         write_features = True
     elif line[0] == "\t" and write_features:
@@ -83,8 +83,14 @@ for line in open(args.tbl):
             if "gene" in fields[2]:
                 if start < start_offset or end > end_clip:
                     write_features = False
-            else:
-                write_features = True
+                else:
+                    write_features = True
+            elif "REFERENCE" in fields[2]:
+                end = end_clip
+                fields[0] = str(start)
+                fields[1] = str(end)
+                tbl_out.write('\t'.join(fields))
+                continue
         if write_features:
             start = start + start_offset
             end = end + start_offset
