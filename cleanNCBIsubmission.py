@@ -79,9 +79,10 @@ for line in open(args.tbl):
         fields = line.split('\t')
         start = int(fields[0])
         end = int(fields[1])
-        if "gene" in fields[2]:
-            if start < start_offset or end > end_clip:
-                write_features = False
+        if len(fields) < 2:
+            if "gene" in fields[2]:
+                if start < start_offset or end > end_clip:
+                    write_features = False
             else:
                 write_features = True
         if write_features:
