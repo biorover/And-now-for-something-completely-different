@@ -16,7 +16,7 @@ args = parser.parse_args()
 actions = {}
 readline = False
 for line in open(args.cont):
-    if readline:
+    if readline and len(line) > 1:
         locus = line.split()[0]
         seqlen = int(line.split()[1])
         coords = []
