@@ -73,7 +73,7 @@ for line in open(args.tbl):
                     end_clip = action[0]
         tbl_out.write(line)
         write_features = True
-    elif line[0] == ""\t" and write_features:
+    elif line[0] == "\t" and write_features:
         tbl_out.write(line)
     else:
         fields = line.split('\t')
