@@ -25,8 +25,10 @@ for line in open(args.cont):
         if not locus in actions:
             actions[locus] = []
         actions[locus].append(coords + [seqlen])
+    if "Sequence name, length, span(s)," in line:
+        readline = True
 
-print("contaminated region:")
+print("contaminated regions:")
 for locus in actions:
     for action in actions[locus]:
         print([locus] + action)
