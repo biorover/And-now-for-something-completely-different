@@ -93,7 +93,7 @@ for line in open(args.tbl):
                     write_features = False
                 else:
                     write_features = True
-            elif "REFERENCE" in fields[2]
+            elif "REFERENCE" in fields[2]:
                 end = end_clip
                 fields[0] = str(start)
                 fields[1] = str(end)
