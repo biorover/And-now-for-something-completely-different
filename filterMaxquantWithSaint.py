@@ -111,7 +111,7 @@ for line in open(args.pg):
                 except:
                     score = "."
                 avgint = sum(bait_intensities[bait]) / len(bait_intensities[bait])
-                phout.write("\t".join([bait,fields[6],str(avgint),score]) + '\n')
+                phout.write("\t".join([bait,fields[1],str(avgint),score]) + '\n')
         if not keep_row: #skips subtraction and writing output if dropping row
             continue
         if args.subtract: #subtracts mean control intensity from bait intensities, or sets bait intensities to zero if smaller than control
