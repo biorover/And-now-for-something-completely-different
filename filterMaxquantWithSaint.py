@@ -106,7 +106,7 @@ for line in open(args.pg):
             for bait in bait_intensities:
                 try:
                     score = str(1 - prob_dict[bait + "\t" + fields[1]])
-                except KeyError:
+                except:
                     score = "."
                 phout.write("\t".join([bait,fields[6],str(sum(bait_intensities[bait])/len(bait_intensities[bait])),score]) + '\n')
         if not keep_row: #skips subtraction and writing output if dropping row
