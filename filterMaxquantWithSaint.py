@@ -123,6 +123,7 @@ for line in open(args.pg):
 
     sys.stdout.write("\t".join(fields))
 
+sys.stdout.close()
 
 if args.pro_hits_out:
     phout.close()
