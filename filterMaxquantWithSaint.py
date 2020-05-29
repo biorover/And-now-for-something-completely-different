@@ -67,6 +67,7 @@ baits = []
 control_cols = []
 for line in open(args.pg):
     fields = line.split('\t')
+    fieldscopy = fields[:]
     if intensity_cols == []: #checks if this is the header row (in which case intensity cols not yet filled in)
         for i in range(len(fields)):
             field = fields[i]
@@ -103,7 +104,7 @@ for line in open(args.pg):
                 bait = baits[i]
                 if not bait in bait_intensities:
                     bait_intensities[bait] = []
-                bait_intensities[bait].append(float(fields[intensity_index]))
+                bait_intensities[bait].append(float(fieldscopy[intensity_index]))
             for bait in bait_intensities:
                 try:
                     score = str(1 - prob_dict[bait + "\t" + fields[1]])
