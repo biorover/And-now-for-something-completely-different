@@ -27,6 +27,8 @@ parser.add_argument('--name_truncate_length', default = 99, type = int,
     help = 'int (default = 99): length after which to truncate protein group names \
     (added because SAINT errors on long protein names so these are usually \
     truncated before running SAINT)')
+parser.add_argument('--pro_hits_out', default = None, type = bool,
+                    help = 'File to write results in a format for pro-hits visualization (default = None)')
 args = parser.parse_args()
 
 ####
@@ -37,12 +39,14 @@ args = parser.parse_args()
 ####
 
 false_positives = set()
+prob_dict = {}
 
 for line in open(args.int):
     fields = line.split('\t')
     if fields[0] != "IP" and fields[1] != "Bait": #in order to skip header
         if float(fields[5]) < 0.95:
             false_positives.add(fields[1] + "\t" + fields[2])
+        prob_dict[fields[1] + "\t" + fields[2]] = float(fields[5])
 
 ####
 #
@@ -52,6 +56,11 @@ for line in open(args.int):
 # subtraction if specified
 #
 ####
+
+if args.pro_hits_out:
+    phout = open(args.pro_hits_out,'w')
+    phout.write('BAIT\tPreyGene\tAvgIntensity\tfauxFDR\n')
+
 
 intensity_cols = []
 baits = []
@@ -86,6 +95,15 @@ for line in open(args.pg):
             for bait in list(set(baits)):
                 if not bait + "\t" + fields[1] in false_positives:
                     keep_row = True
+        if args.pro_hits_out:
+            bait_intensities = {}
+            for baiti in range(len(baits)):
+                bait = baits[baiti]
+                if not bait in bait_intensities:
+                    bait_intensities[bait] = []
+                bait_intensities[bait].append(float(fields[intensity_cols[baiti]]))
+            for bait in bait_intensities:
+                phout.write("\t".join[bait,fields[6],str(sum(bait_intensities[bait])/len(bait_intensities[bait])),str(1 - prob_dict[bait + "\t" + fields[1]])] + '\n')
         if not keep_row: #skips subtraction and writing output if dropping row
             continue
         if args.subtract: #subtracts mean control intensity from bait intensities, or sets bait intensities to zero if smaller than control
@@ -99,3 +117,7 @@ for line in open(args.pg):
                     fields[i] = "0"
 
     sys.stdout.write("\t".join(fields))
+
+
+if args.pro_hits_out:
+    phout.close()
