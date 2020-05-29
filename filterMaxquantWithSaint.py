@@ -86,6 +86,7 @@ for line in open(args.pg):
         if len(fields[1]) > args.name_truncate_length:
             fields[1] = fields[1][:args.name_truncate_length]
         if args.mode == 'bait-specific':
+            keep_row = True
             for i in range(len(intensity_cols)):
                 intensity_index = intensity_cols[i]
                 if baits[i] + "\t" + fields[1] in false_positives:
