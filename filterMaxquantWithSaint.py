@@ -27,7 +27,7 @@ parser.add_argument('--name_truncate_length', default = 99, type = int,
     help = 'int (default = 99): length after which to truncate protein group names \
     (added because SAINT errors on long protein names so these are usually \
     truncated before running SAINT)')
-parser.add_argument('--pro_hits_out', default = None, 
+parser.add_argument('--pro_hits_out', default = None,
                     help = 'File to write results in a format for pro-hits visualization (default = None)')
 args = parser.parse_args()
 
@@ -98,17 +98,19 @@ for line in open(args.pg):
                     keep_row = True
         if args.pro_hits_out:
             bait_intensities = {}
-            for baiti in range(len(baits)):
-                bait = baits[baiti]
+            for i in range(len(intensity_cols)):
+                intensity_index = intensity_cols[i]
+                bait = baits[i]
                 if not bait in bait_intensities:
                     bait_intensities[bait] = []
-                bait_intensities[bait].append(float(fields[intensity_cols[baiti]]))
+                bait_intensities[bait].append(float(fields[intensity_index]))
             for bait in bait_intensities:
                 try:
                     score = str(1 - prob_dict[bait + "\t" + fields[1]])
                 except:
                     score = "."
-                phout.write("\t".join([bait,fields[6],str(sum(bait_intensities[bait])/len(bait_intensities[bait])),score]) + '\n')
+                avgint = sum(bait_intensities[bait]) / len(bait_intensities[bait])
+                phout.write("\t".join([bait,fields[6],str(avgint),score]) + '\n')
         if not keep_row: #skips subtraction and writing output if dropping row
             continue
         if args.subtract: #subtracts mean control intensity from bait intensities, or sets bait intensities to zero if smaller than control
