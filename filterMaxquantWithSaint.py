@@ -104,7 +104,11 @@ for line in open(args.pg):
                     bait_intensities[bait] = []
                 bait_intensities[bait].append(float(fields[intensity_cols[baiti]]))
             for bait in bait_intensities:
-                phout.write("\t".join([bait,fields[6],str(sum(bait_intensities[bait])/len(bait_intensities[bait])),str(1 - prob_dict[bait + "\t" + fields[1]])]) + '\n')
+                try:
+                    score = str(1 - prob_dict[bait + "\t" + fields[1]])
+                except KeyError:
+                    score = "."
+                phout.write("\t".join([bait,fields[6],str(sum(bait_intensities[bait])/len(bait_intensities[bait])),score]) + '\n')
         if not keep_row: #skips subtraction and writing output if dropping row
             continue
         if args.subtract: #subtracts mean control intensity from bait intensities, or sets bait intensities to zero if smaller than control
