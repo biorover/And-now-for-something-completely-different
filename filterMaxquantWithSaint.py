@@ -27,7 +27,7 @@ parser.add_argument('--name_truncate_length', default = 99, type = int,
     help = 'int (default = 99): length after which to truncate protein group names \
     (added because SAINT errors on long protein names so these are usually \
     truncated before running SAINT)')
-parser.add_argument('--pro_hits_out', default = None, type = bool,
+parser.add_argument('--pro_hits_out', default = None, 
                     help = 'File to write results in a format for pro-hits visualization (default = None)')
 args = parser.parse_args()
 
