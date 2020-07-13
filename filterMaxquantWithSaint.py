@@ -34,18 +34,18 @@ args = parser.parse_args()
 ####
 #
 # Reads each line in SAINT interactions file and adds "bait<tab>prey" to
-# false_positives set if probability of true interaction < 0.95
+# true_positives set if probability of true interaction >= 0.95
 #
 ####
 
-false_positives = set()
+true_positives = set()
 prob_dict = {}
 
 for line in open(args.int):
     fields = line.split('\t')
     if fields[0] != "IP" and fields[1] != "Bait": #in order to skip header
-        if float(fields[5]) < 0.95:
-            false_positives.add(fields[1] + "\t" + fields[2])
+        if float(fields[5]) >= 0.95:
+            true_positives.add(fields[1] + "\t" + fields[2])
         prob_dict[fields[1] + "\t" + fields[2]] = float(fields[5])
 
 ####
@@ -59,7 +59,7 @@ for line in open(args.int):
 
 if args.pro_hits_out:
     phout = open(args.pro_hits_out,'w')
-    phout.write('BAIT\tPreyGene\tAvgIntensity\tfauxFDR\n')
+    phout.write('BAIT\tPreyGene\tAvgIntensity\tBFDR\n')
 
 
 intensity_cols = []
@@ -90,12 +90,12 @@ for line in open(args.pg):
             keep_row = True
             for i in range(len(intensity_cols)):
                 intensity_index = intensity_cols[i]
-                if baits[i] + "\t" + fields[1] in false_positives:
+                if not baits[i] + "\t" + fields[1] in true_positives:
                     fields[intensity_index] = "0"
         elif args.mode == 'all':
             keep_row = False #sets default to false, then we'll set it to true if any bait is missing from false positive list
             for bait in list(set(baits)):
-                if not bait + "\t" + fields[1] in false_positives:
+                if bait + "\t" + fields[1] in true_positives:
                     keep_row = True
         if args.pro_hits_out:
             bait_intensities = {}
