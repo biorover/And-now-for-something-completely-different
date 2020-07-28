@@ -13,6 +13,8 @@ required.add_argument('--pg',help = 'maxquant proteinGroups file', required = Tr
 required.add_argument('--int', help = 'SAINT interactions file', required = True)
 parser.add_argument('--ctl', default = 'ctl', help = 'text designation in \
     control columns. Default = "ctl"')
+parser.add_argument('--prob_cutoff', default = 0.9, type = float,
+    help = 'probability score cutoff for protein retention')
 parser.add_argument('--rep_sep', default = "_", help = 'separator between\
     bait name and replicate number. Set to "none" if no biological replicates. \
     Default = "_"')
@@ -44,7 +46,7 @@ prob_dict = {}
 for line in open(args.int):
     fields = line.split('\t')
     if fields[0] != "IP" and fields[1] != "Bait": #in order to skip header
-        if float(fields[5]) >= 0.95:
+        if float(fields[5]) >= args.prob_cutoff:
             true_positives.add(fields[1] + "\t" + fields[2])
         prob_dict[fields[1] + "\t" + fields[2]] = float(fields[5])
 
@@ -93,7 +95,7 @@ for line in open(args.pg):
                 if not baits[i] + "\t" + fields[1] in true_positives:
                     fields[intensity_index] = "0"
         elif args.mode == 'all':
-            keep_row = False #sets default to false, then we'll set it to true if any bait is missing from false positive list
+            keep_row = False #sets default to false, then we'll set it to true if any bait ispresent in true positive list
             for bait in list(set(baits)):
                 if bait + "\t" + fields[1] in true_positives:
                     keep_row = True
