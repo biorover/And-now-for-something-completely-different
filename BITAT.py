@@ -162,6 +162,8 @@ def build_tig_table(genome_fasta,out_prefix,blast_df):
     rdf['phyl'] = "Unk"
     rdf['class'] = "Unk"
     rdf['order'] = "Unk"
+    rdf['family'] = 'Unk'
+    rdf['genus'] = 'Unk'
     for contig in list(rdf.index):
         if contig in list(blast_df['contig']):
             contig_df = blast_df[blast_df['contig'] == contig]
@@ -171,12 +173,16 @@ def build_tig_table(genome_fasta,out_prefix,blast_df):
                     rdf.at[contig,'phyl'] = contig_df[contig_df['king'] == rdf.at[contig,'king']]['phyl'].value_counts().index[0]
                     rdf.at[contig,'class'] = contig_df[contig_df['phyl'] == rdf.at[contig,'phyl']]['class'].value_counts().index[0]
                     rdf.at[contig,'order'] = contig_df[contig_df['class'] == rdf.at[contig,'class']]['order'].value_counts().index[0]
+                    rdf.at[contig,'family'] = contig_df[contig_df['order'] == rdf.at[contig,'order']]['family'].value_counts().index[0]
+                    rdf.at[contig,'genus'] = contig_df[contig_df['family'] == rdf.at[contig,'family']]['genus'].value_counts().index[0]
             elif len(contig_df) > 0:
                 hit_index = contig_df['score'].idxmax()
                 rdf.at[contig,'king'] = contig_df.at[hit_index,'king']
                 rdf.at[contig,'phyl'] = contig_df.at[hit_index,'phyl']
                 rdf.at[contig,'class'] = contig_df.at[hit_index,'class']
                 rdf.at[contig,'order'] = contig_df.at[hit_index,'order']
+                rdf.at[contig,'family'] = contig_df.at[hit_index,'family']
+                rdf.at[contig,'genus'] = contig_df.at[hit_index,'genus']
 
     rdf.to_csv(out_prefix + '.annotated_tig_table.tab')
     return rdf
