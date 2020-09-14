@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import pandas as pd
 import seaborn as sns
 import sys
@@ -22,7 +23,7 @@ parser.add_argument('--coverage_file',default = None, help = 'tab-delimited file
 parser.add_argument('--genome_fasta',help = 'fasta file of the genome assembly', default = None)
 parser.add_argument('--qid2taxid', help = 'tab-delimited file from the NCBI taxonomy ftp site converting protein query IDs to ')
 parser.add_argument('--custom_hit_hierarchy',default = None, help = 'linean taxanomic hierarchy of hits from custom database: \
-                    "kingdom,phylum,class,order"')
+                    "kingdom,phylum,class,order,family,genus"')
 parser.add_argument('--custom_hit_id', default = None, help = 'tag in gene id that indicates the hit is from a custom database')
 parser.add_argument('--filtered_hit_table', help = 'comma-delimited diamond/blast output that has already undergone filtering to keep only one hit per window', default = None)
 parser.add_argument('--filtered_annotated_hit_table', help = 'comma-delimited diamond/blast out that has already undergone filtering and taxon annotation',default = None)
@@ -79,7 +80,7 @@ def annotate_hit_table(blast_df, out_prefix, qid2taxid, custom_hit_hierarchy = N
     error_counts = 0
     for index,row in blast_df.iterrows():
         if custom_hit_id in row['hit']:
-            blast_df.at[index,'king'],blast_df.at[index,'phyl'],blast_df.at[index,'class'], blast_df.at[index,'order'] = custom_hits_are_from
+            blast_df.at[index,'king'],blast_df.at[index,'phyl'],blast_df.at[index,'class'], blast_df.at[index,'order'],blast_df.at[index,'family'],blast_df.at[index,'genus'] = custom_hits_are_from
             blast_df.at[index,'is_custom'] = True
         else:
             qid = row['hit']
