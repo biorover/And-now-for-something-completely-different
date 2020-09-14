@@ -83,7 +83,7 @@ def annotate_hit_table(blast_df, out_prefix, qid2taxid, custom_hit_hierarchy = N
             blast_df.at[index,'is_custom'] = True
         else:
             qid = row['hit']
-            if qid in qid2taxid_df.index:
+            if qid in qid2taxid_dict:
                 lineage = ncbi.get_lineage(qid2taxid_dict[qid])
                 ranks = ncbi.get_rank(lineage)
                 names = ncbi.get_taxid_translator(lineage)
