@@ -30,7 +30,7 @@ parser.add_argument('--filtered_annotated_hit_table', help = 'comma-delimited di
 parser.add_argument('--plot_max_depth', default = None, type = int, help = 'max depth for plot (integer; default = {max depth in data})')
 parser.add_argument('--plot_taxon_level',default = 'phyl', help = 'taxonomic at which plot points are colored. Options are \
                     "king","phyl","class", "order", "family", and "genus" (default = "phyl")')
-parser.add_argument('--min_depth',default = 0,help = 'minimum sequencing depth for a contig to be included on plot (default = 0)')
+parser.add_argument('--min_depth',default = 0,help = 'minimum sequencing depth for a contig to be included on plot (default = 0)',type = int)
 
 args = parser.parse_args()
 
