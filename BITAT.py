@@ -29,7 +29,8 @@ parser.add_argument('--filtered_hit_table', help = 'comma-delimited diamond/blas
 parser.add_argument('--filtered_annotated_hit_table', help = 'comma-delimited diamond/blast out that has already undergone filtering and taxon annotation',default = None)
 parser.add_argument('--plot_max_depth', default = None, type = int, help = 'max depth for plot (integer; default = {max depth in data})')
 parser.add_argument('--plot_taxon_level',default = 'phyl', help = 'taxonomic at which plot points are colored. Options are \
-                    "king","phyl","class", and "order" (default = "phyl")')
+                    "king","phyl","class", "order", "family", and "genus" (default = "phyl")')
+parser.add_argument('--min_depth',default = 0,help = 'minimum sequencing depth for a contig to be included on plot (default = 0)')
 
 args = parser.parse_args()
 
@@ -200,11 +201,12 @@ def add_depths(tig_table,coverage_file):
             tig_table.at[fields[0],'Depth'] = float(fields[1])
     return tig_table
 
-def plot(tig_table, taxa_level, max_depth,out_prefix):
+def plot(tig_table, taxa_level, max_depth,out_prefix,min_depth):
     if max_depth:
         plotdf = tig_table[tig_table["Depth"] < max_depth]
+        plotdf = tig_table[tig_table["Depth"] > min_depth]
     else:
-        plotdf = tig_table
+        plotdf = tig_table[tig_table["Depth"] > min_depth]
     grid = sns.JointGrid(x='GC', y='Depth', data=plotdf)
     taxalist = list(set(list(plotdf[taxa_level])))
     taxalist.sort()
@@ -228,7 +230,7 @@ def main():
         rdf = build_tig_table(args.genome_fasta,args.out_prefix,blast_df)
     if args.coverage_file:
         rdf = add_depths(rdf,args.coverage_file)
-        plot(rdf,args.plot_taxon_level,args.plot_max_depth,args.out_prefix)
+        plot(rdf,args.plot_taxon_level,args.plot_max_depth,args.out_prefix,args.min_depth)
 
 if __name__ == "__main__":
     main()
