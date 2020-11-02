@@ -60,7 +60,7 @@ def annotate_hit_table(blast_df, out_prefix, qid2taxid, custom_hit_hierarchy = N
     qid2taxid_file = open(qid2taxid)
     qid2taxid_dict = {}
     for line in qid2taxid_file:
-        fields = line.split('\t')
+        fields = line.split()
         if len(fields) == 3:
             if fields[1] in list(blast_df['hit']):
                 qid2taxid_dict[fields[1]] = int(fields[2])
