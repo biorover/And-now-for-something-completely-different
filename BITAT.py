@@ -98,6 +98,8 @@ def annotate_hit_table(blast_df, out_prefix, qid2taxid, custom_hit_hierarchy = N
                 phylum = False
                 taxclass = False
                 order = False
+                family = False
+                genus = False
                 for i in lineage:
                     if ranks[i] == "superkingdom":
                         superkingdom = names[i]
