@@ -57,6 +57,10 @@ def filter_hit_table(hit_table,out_prefix):
 
 def annotate_hit_table(blast_df, out_prefix, qid2taxid, custom_hit_hierarchy = None, custom_hit_id = None):
     sys.stderr.write('filtered blast table shape: ' + str(blast_df.shape) + '\n')
+    
+    seen_lineages = {}
+    seen_ranks = {}
+    seen_names = {}
 
     qid2taxid_file = open(qid2taxid)
     qid2taxid_dict = {}
@@ -90,9 +94,17 @@ def annotate_hit_table(blast_df, out_prefix, qid2taxid, custom_hit_hierarchy = N
         else:
             qid = row['hit']
             if qid in qid2taxid_dict:
-                lineage = ncbi.get_lineage(qid2taxid_dict[qid])
-                ranks = ncbi.get_rank(lineage)
-                names = ncbi.get_taxid_translator(lineage)
+                if qid2taxid_dict[qid] in seen_lineages:
+                    lineage = seen_lineages[qid2taxid_dict[qid]]
+                    ranks = seen_ranks[qid2taxid_dict[qid]]
+                    names = seen_names[qid2taxid_dict[qid]]
+                else:
+                    lineage = ncbi.get_lineage(qid2taxid_dict[qid])
+                    seen_lineages[qid2taxid_dict[qid]] = lineage
+                    ranks = ncbi.get_rank(lineage)
+                    seen_ranks[qid2taxid_dict[qid]] = ranks
+                    names = ncbi.get_taxid_translator(lineage)
+                    seen_names[qid2taxid_dict[qid]] = names
                 superkingdom = False
                 kingdom = False
                 phylum = False
