@@ -92,6 +92,7 @@ while "" in edge_list:
 seq_dict = {}
 link_dict = {}
 count = 0
+def_set = set()
 for line in open(args.gfa):
     fields = line.split()
     if line[0] == 'S':
