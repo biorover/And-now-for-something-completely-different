@@ -19,6 +19,8 @@ parser.add_argument('--drop_list', help = 'file listing edges to drop from \
     graph. File should have one edge name per line')
 parser.add_argument('--min_length', default = 0, type = int,
     help = 'minimum length for output contigs (default = 0)')
+parser.add_argument('--long_names', default = "False", help = 'if set to "True", \
+    contig names include all node edges used in contig construction')
 
 args = parser.parse_args()
 
@@ -112,6 +114,7 @@ link_df.columns = ['edge1','orient1','edge2','orient2','overlap']
 
 newtigs = {}
 used_edges = []
+used_edge_dict = {}
 
 count = 0
 for edge in seq_dict.keys():
@@ -125,7 +128,12 @@ for edge in seq_dict.keys():
             break
         newtigs[tigname] = extendee[0]
         used_edges.extend(extendee[1])
+        used_edge_dict[tigname] = extendee[1]
+
 
 for tig in newtigs:
     if len(newtigs[tig]) > args.min_length:
-        sys.stdout.write(">" + tig + "\n" + newtigs[tig] + "\n")
+        if args.long_names.upper() in ['TRUE','T']:
+            sys.stdout.write(">" + tig + "_" + ":".join(used_edge_dict[tig]) + "\n" + newtigs[tig] + "\n")
+        else:
+            sys.stdout.write(">" + tig + "\n" + newtigs[tig] + "\n")
