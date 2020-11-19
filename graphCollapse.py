@@ -99,8 +99,16 @@ for line in open(args.gfa):
             seq_dict[fields[1]] = fields[2]
     elif line[0] == 'L':
         if not line.split()[1] in edge_list and not line.split()[3] in edge_list:
-            link_dict[count] = fields[1:]
-            count += 1
+            if not "\t".join(fields[1:]) in def_set:
+                link_dict[count] = fields[1:]
+                def_set.add("\t".join(fields[1:]))
+                count += 1
+            comp = [fields[3],revor(fields[4]),fields[1],revor(fields[2])]
+            if not "\t".join(comp) in def_set:
+                link_dict[count] = comp
+                def_set.add("\t".join(comp))
+                count += 1
+
 
 link_df = pd.DataFrame.from_dict(link_dict,orient='index')
 link_df.columns = ['edge1','orient1','edge2','orient2','overlap']
